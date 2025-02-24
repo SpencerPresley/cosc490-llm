@@ -1,0 +1,18 @@
+\begin{thebibliography}{}
+
+\bibitem[Firth, 1957]{Firth1957ASO}
+Firth, J.~R. (1957).
+\newblock A synopsis of linguistic theory 1930-1955.
+\newblock {\em Studies in Linguistic Analysis}.
+
+\bibitem[Mikolov et~al., 2013]{Mikolov2013DistributedRO}
+Mikolov, T., Sutskever, I., Chen, K., Corrado, G.~S., and Dean, J. (2013).
+\newblock Distributed representations of words and phrases and their compositionality.
+\newblock {\em Advances in Neural Information Processing Systems}.
+
+\bibitem[Pennington et~al., 2014]{pennington2014glove}
+Pennington, J., Socher, R., and Manning, C.~D. (2014).
+\newblock Glove: Global vectors for word representation.
+\newblock {\em Empirical Methods in Natural Language Processing (EMNLP)}.
+
+\end{thebibliography}

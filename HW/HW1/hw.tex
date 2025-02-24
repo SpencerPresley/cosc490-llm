@@ -1,0 +1,667 @@
+\documentclass{article}
+
+\usepackage{macros}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{framed}
+\usepackage{wrapfig}
+\usepackage{natbib} % For citation commands
+\usepackage{hyperref} % Load hyperref last
+\usepackage{graphicx} % Add this for including graphics
+\usepackage{subfig} % Add this for subfigures
+
+% Configure hyperref to reduce warnings
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan
+}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\title{Homework 1: Background Review + Building a classifier}
+\author{Spencer Presley} % Replace with actual author name or remove if not needed
+
+\begin{document}
+\include{header}
+
+% \bibliographyunit[\chapter] % for bibliographies at the end of each chapter
+
+\maketitle
+
+% \emph{Commentary on Homework 1}:
+This assignment combines knowledge and skills across several disciplines. 
+The purpose of this assignment is to make sure you are prepared for this course. We anticipate that each
+of you will have different strengths and weaknesses, so don't be worried if you struggle with \emph{some} aspects
+of the assignment. But if you find this assignment to be very difficult overall, that is an early warning sign that you may not be prepared to take this course at this time. \\ 
+% Future assignments will be more difficult than this one (and probably around the same length).
+
+To succeed in the course, you will need to know or very quickly get up to speed on:
+\begin{itemize}
+\item Math to the level of the course prerequisites: linear algebra, multivariate calculus, some probability.
+\item Statistics, algorithms, and data structures to the level of the course prerequisites.
+\item Python programming, and the ability to translate from math or algorithms to programming and back.
+\item Some basic LaTeX skills so that you can typeset equations and submit your assignments.
+\end{itemize}
+
+% Questions 1-4 are on review material, that we expect you to know coming into the course. The rest is related to the first few lectures.
+
+% \noindent\fbox{
+%     \parbox{\textwidth}{
+%         \textbf{Homework goals:} After completing this homework, you should be comfortable with: 
+%         \begin{itemize}
+%             \item 
+%         \end{itemize}
+%     }
+% }
+
+\vspace{0.5cm}
+
+% Remove or define \additionalNotes command if needed
+
+\newpage
+
+\section{Refreshing the Rows and Columns: Linear Algebra Review}
+
+For these questions, you may find it helpful to review  \href{http://www.cs.ubc.ca/~schmidtm/Documents/2009_Notes_LinearAlgebra.pdf}{these notes on linear algebra}. 
+
+
+
+\subsection{Basic Operations}
+
+Use the definitions below,
+\[
+\alpha = 2,\quad
+\x = \left[\begin{array}{c}
+0\\
+1\\
+2\\
+\end{array}\right], \quad 
+\y = \left[\begin{array}{c}
+3\\
+4\\
+5\\
+\end{array}\right],\quad
+\textbf{z} = \left[\begin{array}{c}
+1\\
+2\\
+-1\\
+\end{array}\right],\quad
+A = \left[\begin{array}{ccc}
+3 & 2 & 2\\
+1 & 3 & 1\\
+1 & 1 & 3
+\end{array}\right],
+\]
+and use $x_i$ to denote element $i$ of vector $\x$.
+Evaluate the following expressions:
+\begin{enumerate}
+    \item $\sum_{i=1}^n x_i \cdot y_i$ (inner product).
+    \solution{\newline \textcolor{blue}{$(0 \cdot 3) + (1 \cdot 4) + (2 \cdot 5) = 14$}}
+    
+    \item $\sum_{i=1}^n x_iz_i$ (inner product between orthogonal vectors).
+    \solution{\newline \textcolor{blue}{$(0 \cdot 1) + (1 \cdot 2) + (2 \cdot -1) = 0$}}
+    
+    \item $\alpha(\x+\y)$ (vector addition and scalar multiplication).
+    \solution{\newline \textcolor{blue}{$2\left(\begin{bmatrix}
+        0 \\
+        1 \\
+        2
+    \end{bmatrix}
+    + \begin{bmatrix}
+        3 \\
+        4 \\
+        5
+    \end{bmatrix}\right)
+    = 
+    2\begin{bmatrix}
+        3 \\
+        5 \\
+        7
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+        6 \\
+        10 \\
+        14
+    \end{bmatrix}$}}
+    
+    \item $\norm{\x}$ (Euclidean norm of $x$).
+    \solution{
+        \newline
+        \textcolor{blue}{
+            $\sqrt{0^2 + 1^2 + 2^2} = \sqrt{5}$
+        }
+    }
+    
+    \item $\x^\top$ (vector transpose).
+    \solution{\newline \textcolor{blue}{$\begin{bmatrix}
+        0 & 1 & 2
+    \end{bmatrix}$}}
+
+    \item $A\x$ (matrix-vector multiplication).
+    \solution{\newline \textcolor{blue}{$\begin{bmatrix}
+        3 & 2 & 2 \\
+        1 & 3 & 1 \\
+        1 & 1 & 3
+    \end{bmatrix}
+    \begin{bmatrix}
+        0 \\
+        1 \\
+        2
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+        3(0) + 2(1) + 2(2) \\
+        1(0) + 3(1) + 1(2) \\
+        1(0) + 1(1) + 3(2)
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+        6 \\
+        5 \\
+        7
+    \end{bmatrix}$}}
+    
+    \item $\x^\top A\x$ (quadratic form).
+    \solution{\newline \textcolor{blue}{$\begin{bmatrix}
+        0 & 1 & 2
+    \end{bmatrix}
+    \begin{bmatrix}
+        6 \\
+        5 \\
+        7
+    \end{bmatrix}
+    =
+    0(6) + 1(5) + 2(7)
+    = 19$}}
+\end{enumerate}
+Note, you do not need to show your work. 
+
+\noindent\hfill\begin{minipage}{7cm}
+ \begin{framed}
+ \footnotesize
+In the realm where self-supervision crafts,\\ 
+You'll need some skills to climb its shafts. \\ \\
+Firstly, you'll need your linear algebra potion, \\ 
+Ready to solve with matrix motion. \\ 
+Eigenvalues, vectors, and spaces we'll trek, \\ \\
+Then we venture into probability's domain, \\ 
+Where uncertainty and statistics maintain. \\ 
+Random variables, distributions so fair,  \\ \\
+Then you must program, in PyTorch, no less, \\ 
+% Create neural networks, iterate and assess. \\ 
+Tensors, data loaders: your new-found friends,\\ 
+Backpropagation till the very end.  \\
+
+\hspace{3.5cm}---GPT-4 Jan 8 2024 
+\end{framed}
+\end{minipage}\hfill\null
+
+\subsection{Matrix Algebra Rules}
+
+Assume that $\{\x, \y, \z\}$ are $n \times 1$ column vectors and $\{A, B, C\}$ are $n \times n$ real-valued matrices, 
+% $0$ is the zero matrix of appropriate size, and 
+and $\identity$ is the identity matrix of appropriate size. State whether each of the below is true in general (you do not need to show your work).
+
+\begin{enumerate}
+    \item $\x^\top \y = \sum_{i=1}^n x_iy_i$.
+    \solution{\newline \textcolor{blue}{True}}
+    
+    \item $\x^\top \x = \norm{\x}^2$.
+    \solution{\newline \textcolor{blue}{True}}
+    
+    \item $\x^\top \x = \x\x^\top$.
+    \solution{\newline \textcolor{blue}{False}}
+    
+    \item $(\x-\y)^\top(\y-\x) = \norm{\x}^2 - 2\x^\top \y + \norm{\y}^2$.
+    \solution{\newline \textcolor{blue}{False}}
+    
+    \item $AB=BA$.
+    \solution{\newline \textcolor{blue}{False}}
+    
+    \item $A(B + C) = AB + AC$.
+    \solution{\newline \textcolor{blue}{True}}
+    
+    \item $(AB)^\top = A^\top B^\top$.
+    \solution{\newline \textcolor{blue}{True}}
+    
+    \item $\x^\top A\y = \y^\top A^\top \x$.
+    \solution{\newline \textcolor{blue}{True}}
+    
+    \item $A^\top A = \identity$ if the columns of $A$ are orthonormal.
+    \solution{\newline \textcolor{blue}{True}}
+
+\end{enumerate}
+
+\newpage
+
+
+\subsection{Matrix operations}
+Let 
+$\textbf{B} = 
+\begin{bmatrix}
+1 & -1 & 0 \\  
+-1 & 2 & -1 \\ 
+0 & -1 & 1
+\end{bmatrix}$. 
+\begin{itemize}
+    \item Is $\textbf{B}$ invertible? If so, find $\textbf{B}^{-1}$. 
+    \solution{\newline \textcolor{blue}{Yes, B is invertible since $\det(B) = 2 \neq 0$. \newline
+    $\textbf{B}^{-1} = \frac{1}{2}\begin{bmatrix}
+        2 & 1 & 0 \\
+        1 & 1 & 1 \\
+        0 & 1 & 2
+    \end{bmatrix}$}}
+    \item Is $\textbf{B}$ diagonalizable? If so, find its diagonalization. 
+    \solution{\newline \textcolor{blue}{Yes, B is diagonalizable with eigenvalues 1 (twice) and 2.}}
+\end{itemize}
+
+\newpage
+
+\section{Taking Chances: Probability Review}
+
+% For these questions you may find it helpful to review these notes on probability:\\
+% \url{http://www.cs.ubc.ca/~schmidtm/Courses/Notes/probability.pdf}\\
+% And here are some slides giving visual representations of the ideas as well as some simple examples:\\
+% \url{http://www.cs.ubc.ca/~schmidtm/Courses/Notes/probabilitySlides.pdf}
+
+% \subsection{Rules of probability (? pts)}
+
+
+
+\subsection{Basic probability}
+Answer the following questions. You do not need to show your work.
+
+\begin{enumerate}
+    \item You are offered the opportunity to play the following game: your opponent rolls 2 regular 6-sided dice. If the difference between the two rolls is at least 3, you win \$15. Otherwise, you get nothing. What is a fair price for a ticket to play this game once? In other words, what is the expected value of playing the game?
+    \solution{\newline \textcolor{blue}{\$5}}
+    
+    \item Consider two events $A$ and $B$ such that $\Pr(A, B)=0$ (they are mutually exclusive). If $\Pr(A) = 0.4$ and $\Pr(A \cup B) = 0.95$, what is $\Pr(B)$? Note: $p(A, B)$ means ``probability of $A$ and $B$'' while $p(A \cup B)$ means ``probability of $A$ or $B$''. It may be helpful to draw a Venn diagram.
+    \solution{\newline \textcolor{blue}{0.55}}
+    
+    \item Instead of assuming that $A$ and $B$ are mutually exclusive ($\Pr(A,B) = 0)$, what is the answer to the previous question if we assume that $A$ and $B$ are independent?
+    \solution{\newline \textcolor{blue}{0.917}}
+\end{enumerate}
+
+
+\subsection{Expectations and Variance}
+
+Suppose we have two coins. Coin $C_1$ comes up heads with probability $0.3$ and coin $C_2$ comes up heads with probability $0.9$. We repeat this process 3 times:
+\begin{itemize}
+    \item Choose a coin with equal probability. 
+    \item Flip that coin once. 
+\end{itemize}
+
+Suppose $X$ is the number of heads after 3 flips.
+\begin{enumerate}
+    \item What is $\expec{X}$?
+    \item What is $\var{X}$?
+    \item Based on the number of heads we get, we earn $Y = \frac{1}{2 + X}$ dollars. 
+    What is $\expec{Y}$?
+\end{enumerate}
+
+\solution{\newline \textcolor{blue}{1. $\expec{X} = 1.8$ \newline
+2. $\var{X} = 0.99$ \newline
+3. $\expec{Y} = 0.3472$}}
+
+\subsection{A Variance Paradox?}
+
+For independent identically distributed (i.i.d.) random variables $X_1, ..., X_n$, each with distribution $F$ and variance $\sigma^2$.
+We know that $\var{X_1 + ... + X_n} = n\sigma^2$. 
+On the other hand, if $X \sim F$, then $\var{X + X} = \var{2X} = 4 \sigma^2$. Is there a contradiction here? Explain. 
+
+\solution{\newline 
+\textcolor{blue}{
+    \newline
+    No, there is no contradiction. The difference is in independence versus scaling a single random variable.
+    \newline
+}
+
+\begin{enumerate}
+    \item \textcolor{blue}{For the sum of n i.i.d. variables ($X_1 + ... + X_n$):}
+    \begin{itemize}
+        \item \textcolor{blue}{Since the variables are independent, their covariances are zero}
+        \item \textcolor{blue}{Therefore $\var{X_1 + ... + X_n} = \var{X_1} + ... + \var{X_n} = n\sigma^2$}
+    \end{itemize}
+
+    \item \textcolor{blue}{For doubling a single variable ($X + X = 2X$):}
+    \begin{itemize}
+        \item \textcolor{blue}{This is equivalent to scaling $X$ by 2}
+        \item \textcolor{blue}{When scaling a random variable by $c$, its variance is multiplied by $c^2$}
+        \item \textcolor{blue}{Thus $\var{2X} = 4\var{X} = 4\sigma^2$}
+    \end{itemize}
+
+\textcolor{blue}{
+    \newline
+    The difference arises because $X + X$ is perfectly correlated (it's the same variable), while $X_1 + X_2$ (for i.i.d. variables) has no correlation. Leading to $4\sigma^2$ in one case and $2\sigma^2$ in the other.
+}}
+
+\end{enumerate}
+
+\newpage
+
+\section{Calculus Review }
+ 
+\subsection{One-variable derivatives}
+
+Answer the following questions. You do not need to show your work.
+
+\begin{enumerate}
+    \item Find the derivative of the function $f(x) = 3x^2 -2x + 5$.
+    \solution{\newline \textcolor{blue}{$f'(x) = 6x - 2$}}
+    
+    \item Find the derivative of the function $f(x) = x(1-x)$.
+    \solution{\newline \textcolor{blue}{$f'(x) = 1 - 2x$}}
+    
+    \item Let $p(x) = \frac{1}{1+\exp(-x)}$ for $x \in \reals$. Compute the derivative of the function $f(x) = x-\log(p(x))$ and simplify it by using the function $p(x)$.
+    \solution{\newline \textcolor{blue}{$f'(x) = 1 - (1-p(x)) = p(x)$}}
+\end{enumerate}
+Note that in this course we will use $\log(x)$ to mean the ``natural'' logarithm of $x$, so that $\log(\exp(1)) = 1$. Also, observe that $p(x) = 1-p(-x)$ for the final part.
+
+\subsection{Multi-variable derivative}
+
+Compute the gradient $\nabla f(\x)$ of each of the following functions. You do not need to show your work.
+\begin{enumerate}
+    \item $f(\x) = x_1^2 + \exp(x_2)$ where $\x = [x_1, x_2] \in \reals^2$.
+    \solution{\newline \textcolor{blue}{$\nabla f(\x) = [2x_1, \exp(x_2)]$}}
+    
+    \item $f(\x) = \exp(x_1 + x_2x_3)$ where $\x = [x_1, x_2, x_3] \in \reals^3$.
+    \solution{\newline \textcolor{blue}{$\nabla f(\x) = [\exp(x_1 + x_2x_3), x_3\exp(x_1 + x_2x_3), x_2\exp(x_1 + x_2x_3)]$}}
+    
+    \item $f(\x) = \mathbf{a}^\top \x$ where $\x \in \reals^2$ and $\mathbf{a} \in \reals^2$.
+    \solution{\newline \textcolor{blue}{$\nabla f(\x) = \mathbf{a}$}}
+    
+    \item $f(\x) = \x^\top A x$ where $A=\left[ \begin{array}{cc}
+        2 & -1 \\
+        -1 & 1
+    \end{array} \right]$ and $\x \in \reals^2$.
+    \solution{\newline \textcolor{blue}{$\nabla f(\x) = \begin{bmatrix} 4x_1 - 2x_2 \\ -2x_1 + 2x_2 \end{bmatrix}$}}
+
+    \item $f(\x) = \frac{1}{2}\norm{\x}^2$ where $\x \in \reals^d$.
+    \solution{\newline \textcolor{blue}{$\nabla f(\x) = \x$}}
+\end{enumerate}
+
+Hint: it is helpful to write out the linear algebra expressions in terms of summations.
+
+
+\newpage
+\section{Algorithms and Data Structures Review}
+
+For these questions you may find it helpful to review \href{http://www.cs.ubc.ca/~schmidtm/Courses/Notes/bigO.pdf}{these notes} or \href{https://en.wikipedia.org/wiki/Big_O_notation}{this Wiki page} on big-O notation. 
+% \subsection{Common Runtimes Notations}
+Now, answer the following questions using big-$O$ notation You do not need to show your work.
+\begin{enumerate}
+    \item What is the cost of running the merge-sort algorithm to sort  a list of $n$ numbers?
+    \solution{\newline \textcolor{blue}{$O(n \log n)$}}
+    
+    \item What is the cost of finding the third-largest element of an unsorted list of $n$ numbers?
+    \solution{\newline \textcolor{blue}{$O(n)$}}
+    
+    \item What is the cost of finding the smallest element greater than 0 in a \emph{sorted} list with $n$ numbers?
+    \solution{\newline \textcolor{blue}{$O(\log n)$}}
+    
+    \item What is the cost of finding the value associated with a key in a hash table with $n$ numbers? \\(Assume the values and keys are both scalars.)
+    \solution{\newline \textcolor{blue}{$O(1)$}}
+    
+    \item What is the cost of computing the matrix-vector product $A\x$ when $A$ is $n \times d$ and $x$ is $d \times 1$?
+    \solution{\newline \textcolor{blue}{$O(nd)$}}
+    
+    \item What is the cost of computing the quadratic form $\x^\top A\x$ when $A$ is $d \times d$ and $\x$ is $d \times 1$?
+    \solution{\newline \textcolor{blue}{$O(d^2)$}}
+
+    \item What is the cost of computing matrix multiplication $AB$ when $A$ is $m \times n$ and $B$ is $n \times d$? 
+    \solution{\newline \textcolor{blue}{$O(mnd)$}}
+
+    % \item \extracredit{} What is the cost of computing matrix inverse $A^{-1}$ when $A$ is $n \times d$ ? Assume that you're using the following formula: $\frac{1}{\det(\mathbf{A})} \operatorname{adj}(\mathbf{A})$, where $\operatorname{adj}$ is the Adjugate matrix
+\end{enumerate}
+
+\newpage
+\section{Programming}
+In this programming homework, we will
+\begin{itemize}
+    \item get familiar with PyTorch and its basics.
+    \item build simple text classifiers with Pytorch for sentiment classification.
+    \item explore different word representational choices (i.e. pre-trained word embeddings) and their effects on the performance of the classifiers.
+\end{itemize}
+
+\noindent \paragraph{Skeleton Code and Structure:}
+The code base for this homework can be found at MyClasses Files under the \texttt{hw1} directory. Your task is to fill in the missing parts in the skeleton code, following the requirements, guidance, and tips provided in this pdf and the comments in the corresponding .py files.
+The code base has the following structure:
+\begin{itemize}
+    \item \texttt{basics.py} introduces and demonstrates the usage of PyTorch basics, e.g. tensors, tensor operations, etc.
+    \item \texttt{model.py} implements a sentiment classifier on movie reviews from scratch with PyTorch.
+    \item \texttt{main.py} provides the entry point to run your implementations in both \texttt{basics.py} and \texttt{model.py}.
+    \item \texttt{hw1.md} provides instructions on how to setup the environment and run each part of the homework in \texttt{main.py}
+\end{itemize}
+
+
+\noindent \todo{} ---
+Many parts of this homework involve simply understanding and running the code already provided in the skeleton, while there is a subset of tasks where you need to 1) generate plots and write short answers based on the results of running the code; 2) fill in the blanks in the skeleton to complete the pipeline. We will explicitly mark these plotting, written answer, and filling-in-the-blank tasks as \todo{} in the following descriptions, as well as a \textcolor{blue}{\texttt{\textbf{\#~TODO}}} at the corresponding blank in the code.
+
+\noindent \paragraph{Submission:} Your submission should contain two parts: 1) plots and short answers under the corresponding questions below; and 2) your completion of the skeleton code base, in a \texttt{.zip} file
+
+\subsection{PyTorch Basics}
+Throughout this course, we will explore several interesting programming problems where you will gain hands-on experience by implementing the concepts/methods/models learned in the lectures. Many of the implementations will be based on the \texttt{PyTorch} framework.
+
+\href{https://pytorch.org/}{PyTorch} is an open-source machine learning library for Python. It is widely used for applications such as natural language processing, computer vision, etc. It was initially developed by the Facebook artificial intelligence research group (FAIR). PyTorch redesigns and implements Torch in Python while sharing the same core C libraries for the backend code. PyTorch developers tuned this back-end code to run Python efficiently.
+
+\subsubsection{Why PyTorch?}
+\begin{itemize}
+    \item  Easy interface: PyTorch offers easy-to-use API. It is easy to understand and debug the code.
+    \item Python usage: This library is considered to be Pythonic which smoothly integrates with the Python data science stack.
+    \item Computational graphs and automatic differentiation: will be covered in later lectures/homework.
+    %\item Computational graphs: PyTorch provides an excellent platform that offers dynamic computational graphs. Thus a user can change them during runtime.
+    %\item Automatic differentiation: After creating the computation graph, we can automatically get gradients/derivatives of functions that we define.
+    %\item Most neural networks today are trained with backpropagation (\href{https://slideslive.com/38996068}{[some are not]}). We optimize the parameters of our model by minimizing the error measure/loss function $J(\theta)$. In each step, we compute the gradients of the network parameters with respect to the loss function and update them by a step size ($\alpha$): $\theta_\text{new} = \theta_\text{old} - \alpha \cdot \nabla_\theta J(\theta)$. The automatic differentiation of PyTorch makes training a neural network very easy!
+\end{itemize}
+In the first part of this programming homework, we will learn about some fundamental components of PyTorch, its core representation (tensor), and its operations.
+
+\subsubsection{Tensors}
+\noindent A PyTorch tensor (\texttt{torch.Tensor}) is a multi-dimensional matrix containing elements of a single data type. They are just like numpy arrays, but they can run on GPU and allow automatic differentiation. We first create a few PyTorch tensors to work with. There are multiple ways to create and initialize PyTorch tensors -- from a list or NumPy array, or with some PyTorch functions.
+
+\noindent Read and run the \texttt{tensor\_creation} function in \texttt{basic.py}, which introduces multiple ways of tensor creation, data type and shape.
+
+\subsubsection{Tensor Operations}
+\noindent Similar to how you deal with arrays in \texttt{Numpy}, most of the operations that exisit in numpy, also exist in PyTorch. They also share a very similar interface (\href{https://numpy.org/devdocs/user/quickstart.html}{[a NumPy tutorial]})
+
+\noindent Read and run the \texttt{tensor\_operations} function in \texttt{basic.py}, which detailed several key tensor operations.
+
+\subsubsection{Mathematical Operations}
+\noindent Other commonly used operations include matrix multiplications, which are essential for neural networks. Quite often, we have an input vector $\mathbf{x}$, which is transformed using a learned weight matrix $\mathbf{W}$. There are multiple ways and functions to perform matrix multiplication, some of which we list below:
+
+\begin{itemize}
+    \item Element-wise sum: \href{https://pytorch.org/docs/stable/generated/torch.add.html}{\texttt{torch.add()}}
+    \item Element-wise multiplication: \href{https://pytorch.org/docs/stable/generated/torch.mul.html}{\texttt{torch.mul()}}
+    %\item Matrix product: \href{https://pytorch.org/docs/stable/generated/torch.matmul.html}{\texttt{torch.matmul()}} Performs the matrix product over two tensors, where the specific behavior depends on the dimensions. If both inputs are matrices (2-dimensional tensors), it performs the standard matrix product. For higher dimensional inputs, the function supports broadcasting (for details see the \href{https://pytorch.org/docs/stable/generated/torch.matmul.html?highlight=matmul#torch.matmul}{documentation}). Can also be written as \texttt{a @ b}, similar to numpy.
+    %\item \texttt{torch.einsum}: Performs matrix multiplications and more (i.e. sums of products) using the Einstein summation convention. 
+\end{itemize}
+
+Instead of explicitly invoking PyTorch functions, we may use \href{https://docs.python.org/3/library/operator.html#mapping-operators-to-functions}{built-in operators} in Python. For example, given two PyTorch tensors \texttt{a} and \texttt{b}, \texttt{torch.add(a, b)} is equivalent to \texttt{a + b}.
+
+\noindent Read and run the \texttt{math\_operations} function in \texttt{basic.py}, which detailed several key math operations.
+
+\subsubsection{PyTorch and NumPy Bridge}
+\noindent It is also very convenient to convert PyTorch tensors to NumPy arrays, and vice versa. 
+\begin{itemize}
+    \item By using \texttt{.numpy()} on a tensor, we can easily convert tensor to \texttt{ndarray}.
+    \item To convert NumPy \texttt{ndarray} to PyTorch tensor, we can use \texttt{.from\_numpy()} to convert ndarray to tensor
+\end{itemize}
+Read and run the \texttt{torch\_numpy} function in \texttt{basic.py}, which detailed the torch-numpy conversions.
+
+%\noindent \paragraph{Simple Exercises with PyTorch Basic Operations}\mbox{}\\
+
+%\noindent Let us practice what we just learned! 
+%$\\\\
+%\noindent \textbf{TODO}: read and complete the missing lines in the \texttt{basic\_task1\_simple\_operations} and \texttt{basic\_task2\_leaky\_relu} functions in \texttt{basic.py}.
+%\\\\
+%\noindent Hint:
+%\begin{itemize}
+    %\item for task 1, you are expected to use only tensor operations (e.g. reshaping and slicing), no hard assignments of tensor element values are expected.
+    %\item for task 2, you are asked to implement the \href{https://pytorch.org/docs/stable/generated/torch.nn.functional.leaky_relu.html}{leaky relu} activation in PyTorch. For tensor element value assignment with conditions, check out \href{https://pytorch.org/docs/stable/generated/torch.where.html}{torch.where}
+%\end{itemize}
+
+
+\subsection{Sentiment Classification with PyTorch and Word Embeddings}
+In the second part of the programming homework, we will build a simple sentiment classifier using PyTorch, with additional different word embeddings.
+We will use the \href{https://huggingface.co/datasets/imdb}{IMDB dataset}, which has reviews about movies that are manually annotated with binary positive (label = 1) or negative reviews (label = 0). 
+
+Spend a few minutes reading a few examples on Huggingface to get a better sense of what this dataset looks like.
+We will use Huggingface's datasets library to download this dataset locally.
+
+\subsubsection{Data Loading and Splits}\label{subsubsec: data loading and splits}
+\noindent The training set is used to train the model while the test set is used to evaluate the model's performance.  Since we don't want to overfit the test set, we will not evaluate on it more than just a few times when we are done with model training. This is very important!!
+
+We will also set aside a subset of the training set as the development set. 
+Dev sets are used in machine learning to evaluate the model's performance during the training process, providing an intermediate check on the model's accuracy before it is evaluated on the test set.
+
+Dev sets prevent overfitting during training. Overfitting occurs when a model is too complex and fits the training data too well, leading to poor performance generalization on new data. The development set allows for monitoring of the model's performance on data it has not seen during training, helping to avoid overfitting.
+We will also cap our train, dev, and test sets at 20k, 1k, and 1k to make our training/evaluation faster, obviously at the cost of a less accuracy.
+
+\noindent Read the \texttt{load\_data} function in \texttt{model.py} to get an understanding of how to download, sub-select and split the raw data.
+
+\subsubsection{Word Embeddings: Representing Meaning in a Computer}
+While we can easily read and understand these movie reviews, they make no sense to a computer as mere sequences of strings. How can we represent the meaning of texts, i.e. \textit{semantics} (roughly speaking), in computers so that it "makes sense" computationally?
+
+A traditional approach is to regard words as \textit{discrete symbols}. We first compile a list of unique words (e.g. $V$ = 50,000 top frequent English words) as vocabulary, then each word can be represented as an \textit{one-hot} vector of dimension $V$: one $1$ at the entry corresponding to the index of that word in the vocabulary, and $0$s at all other entries. However, the key problem of this approach is that it fails to encode some important aspects of meaning (e.g. similarity) computationally. For example, we know that ``hotel'' should be more similar to ``motel'' than to ``apple'', but their one-hot representations are mutually orthogonal with distances all equal to $\sqrt{2}$ - we can not tell the differences!
+
+An alternative approach, which marks one of the most successful and important milestones of modern statistical NLP, is \textit{Distributional Semantics} \citep{Firth1957ASO}. The key idea is that \textit{``You shall know a word by the company it keeps''} - A word's meaning is given by the words that frequently appear close by. Under this notion, each word is represented by a \textit{dense vector}, chosen so that it is similar to vectors of words that appear in similar contexts, where similarity is measured by the vector dot product. Note that word vectors are also called \textit{(word) embeddings}, which we will be mostly referring to in this and the following homework. The most widely adopted frameworks for obtaining word embeddings are learning-based methods that focus on word co-occurrence patterns in local context windows, e.g. Word2vec \citep{Mikolov2013DistributedRO}, or global co-occurrence statistics, e.g. GloVe \citep{pennington2014glove}. And it has been shown that such learned word embeddings have succeeded in capturing fine-grained semantic and syntactic patterns with vector arithmetic, and are beneficial to many downstream NLP tasks. We refer you to the \href{https://web.stanford.edu/class/cs224n/slides/cs224n-2024-lecture01-wordvecs1-public.pdf}{Stanford CS 224N Slides 1}, \href{https://web.stanford.edu/class/cs224n/slides/cs224n-2024-lecture02-wordvecs2.pdf}{Stanford CS 224N Slides 2} and the cited papers for more details about meaning representations and word embeddings.
+
+\subsubsection{String to Feature: Featurizing Input Text with Word Embeddings}
+\noindent Given the powerful representation encoded in word vectors, we will use some pre-trained word embeddings to represent movie reviews as input features to our classifier. Specifically, We will convert each input review into a continuous feature vector. To do so, we will first \textit{tokenize} each input sentence into a sequence of tokens, and map each token to the corresponding word vector. Finally, we take the average over all the word embeddings of that review to represent its ``semantic'' feature.
+
+In this homework, we leverage several pre-trained embeddings provided in 
+\href{https://github.com/piskvorky/gensim#documentation}{\texttt{Gensim}}: a Python library for topic modeling, document indexing and similarity retrieval with large corpora. As you will see in the code base, each \texttt{Gensim} embeddings is a KeyedVectors that stores embeddings of the vocabulary as a numpy \texttt{ndarray} with shape [\texttt{vocab\_size}, \texttt{embed\_size}], and it supports direct string-based access, e.g. \texttt{embeddings[``hotel'']} will return the word vector of ``hotel''.
+\\\\
+\todo{}: read and complete the missing lines in the \texttt{featurize} function in \texttt{model.py}, which converts an input string into a tensor following the description above and the comments in the code. \\
+\noindent\textbf{Hint}: You can refer to the Pytorch NumPy Bridge and \texttt{torch\_numpy} discussed above for converting numpy arrays to tensors.
+
+\subsubsection{Dataset and Dataloader}
+\noindent PyTorch has two primitives to work with data: \texttt{torch.utils.data.Dataset} and \texttt{torch.utils.data.DataLoader} (\href{https://pytorch.org/tutorials/beginner/basics/data\_tutorial.html}{tutorial}).
+\texttt{Dataset} stores each data sample and corresponding labels/auxiliary information and allows us to use pre-loaded/customized data.
+\texttt{DataLoader} wraps an iterable around the \texttt{Dataset} to enable easy controllable/randomized access to the subset (mini-batch) of samples.\\
+We will first apply the featurization function we just completed to all the samples in the raw data, stack the feature tensors and labels into two single tensors to create a \href{https://pytorch.org/docs/stable/_modules/torch/utils/data/dataset.html#TensorDataset}{\texttt{TensorDataset}}. \\\\
+\todo{}: read and complete the missing lines in the \texttt{create\_tensor\_dataset} function in \texttt{model.py}, which converts an input string into a tensor following the description above and the comments in the code. \\
+
+\noindent Then we will use the \texttt{create\_dataloader} function in \texttt{model.py} to wrap each dataset with a dataloader.
+
+\subsubsection{Defining our First PyTorch Model: \texttt{nn.Module}}
+\noindent Now that we have finished data processing and loading, it is time to build the model! In PyTorch, a neural network is built up out of modules. 
+Specifically, a model is represented by a regular Python class that inherits from the \href{https://pytorch.org/docs/stable/generated/torch.nn.Module.html}{torch.nn.Module}.
+Modules can contain other modules, and a neural network is considered to be a module itself as well. 
+
+\noindent The are two most important components in \texttt{torch.nn.Module} are
+\begin{itemize}
+    \item \texttt{\_\_init\_\_(self)} where we define the model parts
+    \item \texttt{forward(self, x)} where the forward inference happens
+\end{itemize}
+The basic template of a module is as follows:
+\begin{lstlisting}[language=Python]
+import torch.nn as nn
+
+class MyModule(nn.Module):
+    def __init__(self):
+        super().__init__()
+        # Some init for my module
+        
+    def forward(self, x):
+        # Function for performing the calculation of the module.
+        pass
+\end{lstlisting}
+
+The forward function is where the computation of the module takes place, and is executed when you call the module (\texttt{nn = MyModule(); nn(x)}).
+
+There are a few important properties of \texttt{torch.nn.Module}:
+\begin{itemize}
+    \item \texttt{state\_dict()} which returns a dictionary of the trainable parameters with their current values
+    \item \texttt{parameters()} which returns a list of all trainable parameters that are used in the forward function.
+    \item \texttt{train()} or \texttt{eval()} that makes the model trainable (or fixed) for training (or evaluation) purposes
+\end{itemize} 
+Note, the backward calculation is done automatically but could be overwritten as well if wanted.
+\\\\
+For this homework, we will build a sentiment classifier that consists of
+\begin{itemize}
+    \item \texttt{nn.Linear} layer that projects the average embedding vector of each sequence to a c-dimension vector, represents the real-valued score for each label class (c $ =2$) in our case.
+    \item \texttt{nn.CrossEntropyLoss} that normalizes the real-valued scores into probability distribution and calculates the cross-entropy loss with the ground truth (binary $0$-$1$) distribution 
+\end{itemize}
+
+\noindent\todo{}: read and complete the missing lines in the \texttt{\_\_init\_\_} and \texttt{forward} function of the \texttt{SentimentClassifier} class in \texttt{model.py}, to create an linear layer and perform forward pass.
+\noindent \textbf{Hint}: check out \href{https://pytorch.org/docs/stable/generated/torch.nn.Linear.html}{\texttt{nn.Linear}} for the definition and forward usage of the linear layer.
+
+\subsubsection{Chain Everything Together: Training and Evaluation} \noindent As we have all the components ready, we can chain them together to build the training and evaluation pipeline. A common training pipeline usually involves:
+\begin{itemize}
+    \item Data loading
+    \item Model initialization and/or weights loading
+    \item Training loop of forward pass, backward pass, loss calculation, and gradient updates
+    \item Evaluation
+\end{itemize}
+
+\noindent \todo{}: read and complete the missing lines in the \texttt{accuracy} function in \texttt{model.py}, to compute the accuracy of model predictions.\\
+\noindent \textbf{Hint}: your return should be a tensor of $0$s and $1$s, indicating the correctness of each prediction. Remember that the prediction (logits) tensor has the shape of $[\text{batch\_size}, \, \text{num\_classes}]$, check out \href{https://pytorch.org/docs/stable/generated/torch.argmax.html}{torch.argmax} for selecting the indices of the maximum value along certain dimension.\\\\
+Then, read \texttt{train} and \texttt{evaluate} function in \texttt{model.py} that provides a simple demonstration of the training/evaluation pipeline.
+
+\subsubsection{Run the pipeline: Train Loss vs. Dev Loss}
+Once you have completed all the \todo{} above, you can run the pipeline to train and evaluate our model. We have provided a visualization function \texttt{visualize\_epochs} in \texttt{model.py} to track and plot the model performance (loss on train and dev set) along the training progress.\\\\
+\noindent \todo{}: run the \texttt{single\_run} function in \texttt{main.py}, paste the plot here, and describe in 2-3 sentences your findings.\\
+\noindent \textbf{Hint}: Do you observe any discrepancy between the trend of train loss and dev loss? What it might indicate?
+\\\\
+\noindent {\color{red}{your plots and answer:}}\\
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.45\textwidth]{./code/src/single_run_loss.png}
+    \caption{Train and dev loss comparison across epochs}
+\end{figure}
+
+\noindent\solution{\newline \textcolor{blue}{In my training results, I observe that while the training loss consistently decreases throughout the epochs, the development loss initially decreases but then plateaus and slightly fluctuates around epoch 8. This discrepancy between training and development loss trends indicates that my model starts to overfit to the training data, as it continues to improve on the training set while not generalizing better to unseen data in the development set. The best development accuracy I achieved was 0.761 at epoch 13, after which the performance remained relatively stable.}}
+
+\subsubsection{Run the pipeline: Explore Different Word Embeddings}
+As discussed earlier, we initialize the embedding layer of the classifier with pre-trained word embeddings. We have provided in \texttt{main.py} 4 different types of pre-trained word embeddings as different representational options for you to explore their effects on model performance. Again, we provide a visualization function \texttt{visualize\_configs} to depict the performance (dev loss and dev accurracy) across model configurations with different embedding choices. \\\\
+
+\noindent \todo{}: run the \texttt{explore\_embeddings} function in \texttt{main.py}, paste the two plots here, and describe in 2-3 sentences your findings.\\
+\noindent \textbf{Hint}: Do you observe any performance differences across different embeddings? What might be the reason of such differences? 
+\\\\
+\noindent {\color{red}{your plot and answer:}}\\
+
+\begin{figure}[!htbp]
+    \centering
+    \subfloat[Development set accuracy across epochs]{\includegraphics[width=0.45\textwidth]{./code/src/embedding_acc.png}}
+    \hfill
+    \subfloat[Development set loss across epochs]{\includegraphics[width=0.45\textwidth]{./code/src/embedding_loss.png}}
+    \caption{Performance comparison of different pre-trained embeddings}
+\end{figure}
+
+\noindent\solution{\newline \textcolor{blue}{The results show a clear performance hierarchy among the different word embeddings, with word2vec-google-news-300 consistently achieving the best performance (reaching ~84\% accuracy), followed by glove-twitter-200, glove-twitter-100, and glove-twitter-50 in descending order. This pattern suggests that both the size of the embedding dimension and the training corpus matter significantly - the larger 300-dimensional word2vec embeddings trained on Google News likely capture more nuanced semantic relationships than the Twitter-trained GloVe embeddings, while among the GloVe variants, larger embedding dimensions (200 \textgreater{} 100 \textgreater{} 50) consistently lead to better performance by encoding more detailed semantic information.}}
+
+\newpage
+\bibliographystyle{apalike}
+\bibliography{ref}
+
+\end{document}
