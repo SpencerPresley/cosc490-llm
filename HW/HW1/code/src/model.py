@@ -138,7 +138,10 @@ Defining our First PyTorch Model
 
 
 class SentimentClassifier(nn.Module):
-    def __init__(self, embed_dim, num_classes):
+    def __init__(self, 
+                 embed_dim: int, 
+                 num_classes: int
+    ):
         super().__init__()
         self.embed_dim = embed_dim
         self.num_classes = num_classes
@@ -153,7 +156,7 @@ class SentimentClassifier(nn.Module):
 
         self.loss = nn.CrossEntropyLoss(reduction="mean")
 
-    def forward(self, inp):
+    def forward(self, inp: torch.FloatTensor) -> torch.FloatTensor:
         # TODO: complete the forward function
         # Hint: follow the hints in the pdf description
 
@@ -181,10 +184,10 @@ def accuracy(
     # logits is a tensor of shape (batch_size, num_classes)
 
     # Get predicted classes by taking argmax along dimension 1
-    predictions = torch.argmax(logits, dim=1)
+    predictions: torch.LongTensor = torch.argmax(logits, dim=1)
 
     # Compare predictions with labels, returns tensor of 0s and 1s
-    correct = predictions == labels
+    correct: torch.LongTensor = predictions == labels
 
     # can also do
     # return (predictions == labels)

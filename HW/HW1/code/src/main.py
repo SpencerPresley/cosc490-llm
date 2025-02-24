@@ -16,13 +16,12 @@ def single_run(
     train_d: Dict[str, List[Union[str, int]]],
     test_d: Dict[str, List[Union[str, int]]],
 ):
-    # TODO: once you have completed the model.py, you can run this function to train and evaluate your model, and visualize the training process with a plot
     train_config = EasyDict(
         {
-            "batch_size": 64,  # we use batching for
-            "lr": 0.025,  # learning rate
-            "num_epochs": 20,  # the total number of times all the training data is iterated over
-            "save_path": "model.pth",  # path where to save the model
+            "batch_size": 64,
+            "lr": 0.025,
+            "num_epochs": 20,
+            "save_path": "model.pth",
             "embeddings": EMBEDDING_TYPES[0],
             "num_classes": 2,
         }
@@ -39,16 +38,15 @@ def explore_embeddings(
     train_d: Dict[str, List[Union[str, int]]],
     test_d: Dict[str, List[Union[str, int]]],
 ):
-    # TODO: once you have completed the model.py, you can run this function to initialize and train your model with different embeddings, and visualize the performance across different embeddings with two plots
     all_emb_epoch_dev_accs, all_emb_epoch_dev_losses = [], []
 
     for embedding_type in EMBEDDING_TYPES:
         train_config = EasyDict(
             {
-                "batch_size": 64,  # we use batching for
-                "lr": 0.025,  # if embedding_type != "None" else 0.01,  # learning rate
-                "num_epochs": 20,  # the total number of times all the training data is iterated over
-                "save_path": "model.pth",  # path where to save the model
+                "batch_size": 64,
+                "lr": 0.025,
+                "num_epochs": 20,
+                "save_path": "model.pth",
                 "embeddings": embedding_type,
                 "num_classes": 2,
             }
@@ -78,15 +76,12 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # load raw data
-    # uncomment the following line to run
     dev_data, train_data, test_data = load_data()
 
     # Run a single training run
-    # uncomment the following line to run
     if args.run_single_run:
         single_run(dev_data, train_data, test_data)
 
     # Explore different embeddings
-    # uncomment the following line to run
     else:
         explore_embeddings(dev_data, train_data, test_data)
